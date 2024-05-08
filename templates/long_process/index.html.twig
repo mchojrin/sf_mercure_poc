@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Long process POC{% endblock %}
+{% block body %}
+	<input type="button" value="Start long process" onclick="startProcess()"/>
+	<div id="updates">
+		
+	</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+const eventSource = new EventSource("{{ mercure('https://my_app/long_process')|escape('js') }}");
+eventSource.onmessage = event => {
+    var eventData = JSON.parse(event.data);
+	console.log(eventData);
+	var p = document.createElement("p");
+	p.innerHTML = "<strong>" + eventData.description + "</strong> at " + eventData.timestamp.date;
+	document.getElementById("updates").appendChild(p);
+}
+
+function startProcess()
+{
+	fetch("{{ url('app_long_process_start') }}");
+}
+</script>
+{% endblock %}
