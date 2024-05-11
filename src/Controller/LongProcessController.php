@@ -2,32 +2,45 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Response,JsonResponse};
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use App\Event\ProcessStartEvent;
+use App\Message\StartProcessMessage;
 use DateTimeImmutable;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\{JsonResponse, Response};
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/long/process')]
 class LongProcessController extends AbstractController
 {
-	public function __construct(private EventDispatcherInterface $eventDispatcher) {}
+    private MessageBusInterface $messageBus;
 
-    #[Route('/long/process/', name: 'app_long_process_index')]
+    public function __construct(MessageBusInterface $messageBus) {
+        $this->messageBus = $messageBus;
+    }
+
+    #[Route('/', name: 'app_long_process_index')]
     public function index(): Response
     {
 	    return $this->render("long_process/index.html.twig");
     }
 
 
-    #[Route('/long/process/start', name: 'app_long_process_start')]
+    #[Route('/start', name: 'app_long_process_start')]
 	public function start(): JsonResponse
 	{
-		$this->eventDispatcher->dispatch(new ProcessStartEvent(new DateTimeImmutable())); 
+		$this->messageBus->dispatch(new StartProcessMessage());
 
 		return new JsonResponse([
 			'success' => true,
-			'data' => [],
+			'data' => [
+                'description' => 'Processed queued',
+                'timestamp' => $this->getTimeStamp(),
+            ],
 		]);
 	}
+
+    private function getTimeStamp() : string
+    {
+        return (new DateTimeImmutable())->format('Y-m-d H:i:s');
+    }
 }

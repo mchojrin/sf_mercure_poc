@@ -21,7 +21,7 @@ use DateTimeImmutable;
 )]
 class MakeProgressCommand extends Command
 {
-    public function __construct(private KernelInterface $kernel, private EventDispatcherInterface $eventDispatcher)
+    public function __construct(private readonly EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct();
     }
@@ -34,18 +34,18 @@ class MakeProgressCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-	$progress = 0;
+        $progress = 0;
 
-	while ($progress < 100) {
-		$io->writeln("Processing...");
-		sleep(rand(1, 5));
-		$currentProgress = rand(1, 100 - $progress);
-		$progress += $currentProgress; 
-		$io->writeln("Process finished at $progress%");
-		$this->eventDispatcher->dispatch(new ProgressMadeEvent(new DateTimeImmutable(), $progress));
-	}
+        while ($progress < 100) {
+            $io->writeln("Processing...");
+            sleep(rand(1, 5));
+            $currentProgress = rand(1, 100 - $progress);
+            $progress += $currentProgress;
+            $io->writeln("Process finished at $progress%");
+            $this->eventDispatcher->dispatch(new ProgressMadeEvent(new DateTimeImmutable(), $progress));
+        }
 
-	$this->eventDispatcher->dispatch(new ProcessFinishEvent(new DateTimeImmutable()));
+        $this->eventDispatcher->dispatch(new ProcessFinishEvent(new DateTimeImmutable()));
 
         return Command::SUCCESS;
     }
