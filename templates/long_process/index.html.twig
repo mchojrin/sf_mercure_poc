@@ -4,23 +4,29 @@
 {% block body %}
 	<input type="button" value="Start long process" onclick="startProcess()"/>
 	<div id="updates">
-		
+
 	</div>
 {% endblock %}
 {% block javascripts %}
 <script>
 const eventSource = new EventSource("{{ mercure('https://my_app/long_process')|escape('js') }}");
+
+function addEventLog(entry) {
+    console.log(entry);
+    var p = document.createElement("p");
+    p.innerHTML = "[" + entry.timestamp.date + "]: " + entry.description;
+    document.getElementById("updates").appendChild(p);
+}
+
 eventSource.onmessage = event => {
-    var eventData = JSON.parse(event.data);
-	console.log(eventData);
-	var p = document.createElement("p");
-	p.innerHTML = "<strong>" + eventData.description + "</strong> at " + eventData.timestamp.date;
-	document.getElementById("updates").appendChild(p);
+    this.addEventLog(JSON.parse(event.data));
 }
 
 function startProcess()
 {
-	fetch("{{ url('app_long_process_start') }}");
+	fetch("{{ url('app_long_process_start') }}").then(value => {
+        this.addEventLog(value);
+    });
 }
 </script>
 {% endblock %}
