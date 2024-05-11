@@ -26,9 +26,7 @@ final readonly class StartProcessMessageHandler
             json_encode(
                 [
                     'description' => 'Process started',
-                    'timestamp' => [
-                        'date' => $this->getTimeStamp(),
-                    ],
+                    'timestamp' => $this->getTimeStamp(),
                 ])
         ));
     }
