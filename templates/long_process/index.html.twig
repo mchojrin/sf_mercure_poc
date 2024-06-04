@@ -2,31 +2,32 @@
 
 {% block title %}Long process POC{% endblock %}
 {% block body %}
-	<input type="button" value="Start long process" onclick="startProcess()"/>
-	<div id="updates">
+    <input type="button" value="Start long process" onclick="startProcess()"/>
+    <div id="updates">
 
-	</div>
+    </div>
 {% endblock %}
 {% block javascripts %}
-<script>
-const eventSource = new EventSource("{{ mercure('https://my_app/long_process')|escape('js') }}");
+    <script>
+        const eventSource = new EventSource("{{ mercure('https://my_app/long_process')|escape('js') }}");
 
-function addEventLog(entry) {
-    console.log(entry);
-    var p = document.createElement("p");
-    p.innerHTML = "[" + entry.timestamp.date + "]: " + entry.description;
-    document.getElementById("updates").appendChild(p);
-}
+        function addEventLog(entry) {
+            console.log(entry);
+            var p = document.createElement("p");
+            p.innerHTML = "[" + entry.timestamp + "]: " + entry.description;
+            document.getElementById("updates").appendChild(p);
+        }
 
-eventSource.onmessage = event => {
-    this.addEventLog(JSON.parse(event.data));
-}
+        eventSource.onmessage = event => {
+            this.addEventLog(JSON.parse(event.data));
+        }
 
-function startProcess()
-{
-	fetch("{{ url('app_long_process_start') }}").then(value => {
-        this.addEventLog(value);
-    });
-}
-</script>
+        function startProcess() {
+            fetch("{{ url('app_long_process_start') }}")
+                .then(response => response.json())
+                .then(data => {
+                    this.addEventLog(data.data);
+                });
+        }
+    </script>
 {% endblock %}
