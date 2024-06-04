@@ -34,13 +34,9 @@ class LongProcessController extends AbstractController
 			'success' => true,
 			'data' => [
                 'description' => 'Processed queued',
-                'timestamp' => $this->getTimeStamp(),
+                'timestamp' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
             ],
 		]);
 	}
 
-    private function getTimeStamp() : string
-    {
-        return (new DateTimeImmutable())->format('Y-m-d H:i:s');
-    }
 }
