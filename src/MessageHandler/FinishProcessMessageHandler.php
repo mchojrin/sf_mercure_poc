@@ -7,29 +7,22 @@ use DateTimeImmutable;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
-final class FinishProcessMessageHandler
+final readonly class FinishProcessMessageHandler
 {
-    public function __construct(private HubInterface $hub, private MessageBusInterface $messageBus)
-    {
-    }
+    public function __construct(private HubInterface $hub){}
 
-    public function __invoke(FinishProcessMessage $message)
+    public function __invoke(FinishProcessMessage $message): void
     {
         $this->hub->publish(new Update(
             'https://my_app/long_process',
             json_encode(
                 [
                     'description' => 'Process finished',
-                    'timestamp' => $this->getTimeStamp(),
+                    'timestamp' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
                 ])
         ));
     }
 
-    private function getTimeStamp(): string
-    {
-        return (new DateTimeImmutable())->format('Y-m-d H:i:s');
-    }
 }
