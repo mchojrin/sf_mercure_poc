@@ -2,7 +2,7 @@
 
 namespace App\Message;
 
-final class MakeProgressMessage
+final readonly class MakeProgressMessage
 {
      public function __construct(private int $currentPercentage) {
      }
@@ -11,5 +11,4 @@ final class MakeProgressMessage
     {
         return $this->currentPercentage;
     }
-
 }
