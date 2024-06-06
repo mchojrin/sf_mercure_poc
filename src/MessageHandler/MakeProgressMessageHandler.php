@@ -17,7 +17,7 @@ final readonly class MakeProgressMessageHandler
 
     public function __invoke(MakeProgressMessage $message): void
     {
-        sleep(rand(1, 3));
+        sleep(rand(0, 2));
         $newPercentage = rand($message->getCurrentPercentage(), 100);
         $this->hub->publish(
             new Update(
