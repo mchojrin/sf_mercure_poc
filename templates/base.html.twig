@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -8,6 +8,9 @@
         {% endblock %}
     </head>
     <body>
+	<div style="float: left; width: 100px; padding-bottom: 10px;">
+		<a href="https://academy.leewayweb.com"><image src="/logo_leeway.png" style="width: 90%;"></image></a>
+	</div>
         {% block body %}{% endblock %}
     </body>
     {% block javascripts %}
