@@ -33,7 +33,7 @@ class LongProcessController extends AbstractController
 		return new JsonResponse([
 			'success' => true,
 			'data' => [
-                'description' => 'Processed queued',
+                'description' => 'Process queued',
                 'timestamp' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
             ],
 		]);
